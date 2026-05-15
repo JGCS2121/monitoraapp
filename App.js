@@ -1,6 +1,6 @@
 import 'react-native-get-random-values';
 import React, { useState, useEffect } from 'react';
-import { View, ActivityIndicator, Text } from 'react-native';
+import { View, ActivityIndicator, Text, Alert, LogBox } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
 import * as Notifications from 'expo-notifications';
@@ -8,6 +8,19 @@ import { ErrorBoundary } from './src/components/ErrorBoundary';
 import { COLORS } from './src/theme/theme';
 import { auth, onAuthStateChanged } from './src/api/firebase';
 import { RootNavigator } from './src/navigation/RootNavigator';
+
+// Ignorar warnings innecesarios en producción
+LogBox.ignoreAllLogs();
+
+// Captura de errores globales para diagnóstico
+ErrorUtils.setGlobalHandler((error, isFatal) => {
+  console.error('CRITICAL ERROR:', error);
+  Alert.alert(
+    "Error Crítico de Inicio",
+    error.message || "Error desconocido",
+    [{ text: "OK" }]
+  );
+});
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
