@@ -1,12 +1,12 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from '../screens/Auth/LoginScreen';
 import DashboardScreen from '../screens/App/DashboardScreen';
 import ChatScreen from '../screens/App/ChatScreen';
 import HistoryScreen from '../screens/App/HistoryScreen';
 import { COLORS } from '../theme/theme';
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 export const RootNavigator = ({ user }) => {
   return (
