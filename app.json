@@ -1,0 +1,37 @@
+{
+  "expo": {
+    "name": "Style Aeternum Monitor",
+    "slug": "style-aeternum-monitor",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": false,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0A0A0A"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0A0A0A"
+      },
+      "package": "com.aeternum1.styleaeternummonitor"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "da3d4b99-f381-47aa-b320-7572d736b0c9"
+      }
+    },
+    "plugins": [
+      "expo-notifications"
+    ]
+  }
+}
