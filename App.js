@@ -1,85 +1,46 @@
-import 'react-native-get-random-values';
-import React, { useState, useEffect } from 'react';
-import { View, ActivityIndicator, Text, Alert, LogBox } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
-import { NavigationContainer } from '@react-navigation/native';
-import * as Notifications from 'expo-notifications';
-import { ErrorBoundary } from './src/components/ErrorBoundary';
-import { COLORS } from './src/theme/theme';
-import { auth, onAuthStateChanged } from './src/api/firebase';
-import { RootNavigator } from './src/navigation/RootNavigator';
-
-// Ignorar warnings innecesarios
-LogBox.ignoreAllLogs();
-
-// Manejo de errores globales
-ErrorUtils.setGlobalHandler((error, isFatal) => {
-  console.error('CRITICAL ERROR:', error);
-  Alert.alert("Error de Aplicación", error.message);
-});
-
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-  }),
-});
-
-function AppContent() {
-  const [user, setUser] = useState(null);
-  const [initializing, setInitializing] = useState(true);
-  const [initError, setInitError] = useState(null);
-
-  useEffect(() => {
-    if (!auth || !onAuthStateChanged) {
-      setInitError('Firebase no pudo inicializarse.');
-      setInitializing(false);
-      return;
-    }
-
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      if (initializing) setInitializing(false);
-    }, (error) => {
-      console.error('Auth error:', error);
-      setInitError('Error de autenticación: ' + error.message);
-      setInitializing(false);
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  if (initializing) {
-    return (
-      <View style={{ flex: 1, backgroundColor: COLORS.background, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator color={COLORS.primary} size="large" />
-        <Text style={{ color: COLORS.textMuted, marginTop: 16, fontSize: 12 }}>Iniciando Monitor...</Text>
-      </View>
-    );
-  }
-
-  if (initError) {
-    return (
-      <View style={{ flex: 1, backgroundColor: COLORS.background, justifyContent: 'center', alignItems: 'center', padding: 24 }}>
-        <Text style={{ color: '#EF4444', fontSize: 18, fontWeight: 'bold', marginBottom: 12 }}>⚠️ Error de Firebase</Text>
-        <Text style={{ color: COLORS.textMuted, textAlign: 'center' }}>{initError}</Text>
-      </View>
-    );
-  }
-
-  return (
-    <NavigationContainer>
-      <StatusBar style="light" backgroundColor={COLORS.background} />
-      <RootNavigator user={user} />
-    </NavigationContainer>
-  );
-}
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 
 export default function App() {
+  const [status, setStatus] = useState("Esperando...");
+
+  const probarFirebase = () => {
+    try {
+      setStatus("Intentando cargar Firebase...");
+      // Intentamos cargar Firebase solo cuando pulsas el botón
+      const { auth } = require('./src/api/firebase');
+      if (auth) {
+        Alert.alert("Éxito", "Firebase cargado correctamente");
+        setStatus("Firebase OK");
+      }
+    } catch (error) {
+      Alert.alert("Error en Firebase", error.message);
+      setStatus("Error: " + error.message);
+    }
+  };
+
   return (
-    <ErrorBoundary>
-      <AppContent />
-    </ErrorBoundary>
+    <View style={styles.container}>
+      <Text style={styles.title}>STYLE AETERNUM MONITOR</Text>
+      <Text style={styles.status}>Estado: {status}</Text>
+      
+      <TouchableOpacity style={styles.button} onPress={probarFirebase}>
+        <Text style={styles.buttonText}>PROBAR CONEXIÓN</Text>
+      </TouchableOpacity>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#0A0A0A',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20
+  },
+  title: { color: '#4ADE80', fontSize: 20, fontWeight: 'bold', marginBottom: 20 },
+  status: { color: '#A0A0A0', marginBottom: 40 },
+  button: { backgroundColor: '#4ADE80', padding: 15, borderRadius: 10 },
+  buttonText: { color: '#000', fontWeight: 'bold' }
+});
