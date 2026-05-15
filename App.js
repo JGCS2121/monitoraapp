@@ -1,89 +1,39 @@
-import 'react-native-get-random-values';
-import React, { useState, useEffect } from 'react';
-import { View, ActivityIndicator, Text, Alert, LogBox } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
-import { NavigationContainer } from '@react-navigation/native';
-import * as Notifications from 'expo-notifications';
-import { ErrorBoundary } from './src/components/ErrorBoundary';
-import { COLORS } from './src/theme/theme';
-import { auth, onAuthStateChanged } from './src/api/firebase';
-import { RootNavigator } from './src/navigation/RootNavigator';
-
-// Ignorar warnings innecesarios en producción
-LogBox.ignoreAllLogs();
-
-// Captura de errores globales para diagnóstico
-ErrorUtils.setGlobalHandler((error, isFatal) => {
-  console.error('CRITICAL ERROR:', error);
-  Alert.alert(
-    "Error Crítico de Inicio",
-    error.message || "Error desconocido",
-    [{ text: "OK" }]
-  );
-});
-
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-  }),
-});
-
-function AppContent() {
-  const [user, setUser] = useState(null);
-  const [initializing, setInitializing] = useState(true);
-  const [initError, setInitError] = useState(null);
-
-  useEffect(() => {
-    if (!auth || !onAuthStateChanged) {
-      setInitError('Firebase no pudo inicializarse correctamente.');
-      setInitializing(false);
-      return;
-    }
-
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      if (initializing) setInitializing(false);
-    }, (error) => {
-      console.error('Auth error:', error);
-      setInitError('Error de autenticación: ' + error.message);
-      setInitializing(false);
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  if (initializing) {
-    return (
-      <View style={{ flex: 1, backgroundColor: COLORS.background, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator color={COLORS.primary} size="large" />
-        <Text style={{ color: COLORS.textMuted, marginTop: 16, fontSize: 12 }}>Conectando...</Text>
-      </View>
-    );
-  }
-
-  if (initError) {
-    return (
-      <View style={{ flex: 1, backgroundColor: COLORS.background, justifyContent: 'center', alignItems: 'center', padding: 24 }}>
-        <Text style={{ color: '#EF4444', fontSize: 18, fontWeight: 'bold', marginBottom: 12 }}>⚠️ Error de inicio</Text>
-        <Text style={{ color: COLORS.textMuted, textAlign: 'center', fontSize: 14 }}>{initError}</Text>
-      </View>
-    );
-  }
-
-  return (
-    <NavigationContainer>
-      <StatusBar style="light" backgroundColor={COLORS.background} />
-      <RootNavigator user={user} />
-    </NavigationContainer>
-  );
+3s
+Run npx expo prebuild --platform android --no-install
+- Creating native directory (./android)
+✔ Created native directory
+- Updating package.json
+✔ Updated package.json | no changes
+- Running prebuild
+Error: ENOENT: no such file or directory, open '/home/runner/work/monitoraapp/monitoraapp/google-services.json'
+    at async open (node:internal/fs/promises:637:25)
+    at async Object.readFile (node:internal/fs/promises:1249:14)
+    at async copyFilePathToPathAsync (/home/runner/work/monitoraapp/monitoraapp/node_modules/@expo/config-plugins/build/utils/fs.js:25:19)
+    at async setGoogleServicesFile (/home/runner/work/monitoraapp/monitoraapp/node_modules/@expo/config-plugins/build/android/GoogleServices.js:97:5)
+    at async /home/runner/work/monitoraapp/monitoraapp/node_modules/@expo/config-plugins/build/android/GoogleServices.js:81:5
+    at async action (/home/runner/work/monitoraapp/monitoraapp/node_modules/@expo/config-plugins/build/plugins/withMod.js:199:23)
+    at async interceptingMod (/home/runner/work/monitoraapp/monitoraapp/node_modules/@expo/config-plugins/build/plugins/withMod.js:104:21)
+    at async interceptingMod (/home/runner/work/monitoraapp/monitoraapp/node_modules/@expo/config-plugins/build/plugins/withMod.js:104:21)
+    at async interceptingMod (/home/runner/work/monitoraapp/monitoraapp/node_modules/@expo/config-plugins/build/plugins/withMod.js:104:21)
+    at async action (/home/runner/work/monitoraapp/monitoraapp/node_modules/@expo/config-plugins/build/plugins/createBaseMod.js:60:21) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/runner/work/monitoraapp/monitoraapp/google-services.json'
 }
+- Running prebuild
+✖ Prebuild failed
+Error: [android.dangerous]: withAndroidDangerousBaseMod: Cannot copy google-services.json from /home/runner/work/monitoraapp/monitoraapp/google-services.json to /home/runner/work/monitoraapp/monitoraapp/android/app/google-services.json. Ensure the source and destination paths exist.
+Error: [android.dangerous]: withAndroidDangerousBaseMod: Cannot copy google-services.json from /home/runner/work/monitoraapp/monitoraapp/google-services.json to /home/runner/work/monitoraapp/monitoraapp/android/app/google-services.json. Ensure the source and destination paths exist.
+    at setGoogleServicesFile (/home/runner/work/monitoraapp/monitoraapp/node_modules/@expo/config-plugins/build/android/GoogleServices.js:100:11)
+    at async /home/runner/work/monitoraapp/monitoraapp/node_modules/@expo/config-plugins/build/android/GoogleServices.js:81:5
+    at async action (/home/runner/work/monitoraapp/monitoraapp/node_modules/@expo/config-plugins/build/plugins/withMod.js:199:23)
+    at async interceptingMod (/home/runner/work/monitoraapp/monitoraapp/node_modules/@expo/config-plugins/build/plugins/withMod.js:104:21)
+    at async interceptingMod (/home/runner/work/monitoraapp/monitoraapp/node_modules/@expo/config-plugins/build/plugins/withMod.js:104:21)
+    at async interceptingMod (/home/runner/work/monitoraapp/monitoraapp/node_modules/@expo/config-plugins/build/plugins/withMod.js:104:21)
+    at async action (/home/runner/work/monitoraapp/monitoraapp/node_modules/@expo/config-plugins/build/plugins/createBaseMod.js:60:21)
+    at async interceptingMod (/home/runner/work/monitoraapp/monitoraapp/node_modules/@expo/config-plugins/build/plugins/withMod.js:104:21)
+    at async evalModsAsync (/home/runner/work/monitoraapp/monitoraapp/node_modules/@expo/config-plugins/build/plugins/mod-compiler.js:206:25)
+    at async compileModsAsync (/home/runner/work/monitoraapp/monitoraapp/node_modules/@expo/config-plugins/build/plugins/mod-compiler.js:123:10)
+Error: Process completed with exit code 1.
 
-export default function App() {
-  return (
-    <ErrorBoundary>
-      <AppContent />
-    </ErrorBoundary>
-  );
-}
